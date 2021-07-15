@@ -58,11 +58,12 @@
               return d.new_cases;
             }) // I need to give the vector of value
             .domain(x.domain()) // then the domain of the graphic
-            .thresholds(x.ticks(70)); // then the numbers of bins
+            .thresholds(x.ticks(100)); // then the numbers of bins ??
 
           // And apply this function to data to get the bins
-          var bins = histogram(data);
+          var bins = histogram(data); //bins
 
+          console.log(bins);
           // Y axis: scale and draw:
           var y = d3.scaleLinear().range([height, 0]);
           y.domain([
@@ -70,7 +71,7 @@
             d3.max(bins, function (d) {
               return d.length;
             }),
-          ]); // d3.hist has to be called before the Y axis obviously
+          ]); // d3.hist has to be called before the Y axis obviously //gets the highest number of frequency from the bins.
           svg.append("g").call(d3.axisLeft(y));
 
           // append the bar rectangles to the svg element
