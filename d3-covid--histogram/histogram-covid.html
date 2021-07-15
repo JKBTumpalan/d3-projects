@@ -4,12 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Histogram of new cases</title>
     <!-- Load d3.js -->
     <script src="https://d3js.org/d3.v4.js"></script>
   </head>
   <body>
     <!-- Create a div where the graph will take place -->
+    <h1>Histogram of new cases since January 2020</h1>
     <div id="my_dataviz"></div>
 
     <script>
@@ -29,12 +30,21 @@
 
       // get the data
       d3.csv(
-        "https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv",
+        "https://raw.githubusercontent.com/JKBTumpalan/d3-projects/master/d3-covid--histogram/owid-covid-data.csv",
         function (data) {
+          let mapData = d3.map(data, (d) => d.new_cases).keys();
+
+          let newCasesData = mapData.map((data) => parseInt(data));
+
+          console.log(newCasesData);
+
+          let max = d3.max(newCasesData);
+          let min = d3.min(newCasesData);
+
           // X axis: scale and draw:
           var x = d3
             .scaleLinear()
-            .domain([0, 1000]) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+            .domain([0, max]) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
             .range([0, width]);
           svg
             .append("g")
@@ -45,7 +55,7 @@
           var histogram = d3
             .histogram()
             .value(function (d) {
-              return d.price;
+              return d.new_cases;
             }) // I need to give the vector of value
             .domain(x.domain()) // then the domain of the graphic
             .thresholds(x.ticks(70)); // then the numbers of bins
@@ -73,6 +83,9 @@
             .attr("transform", function (d) {
               return "translate(" + x(d.x0) + "," + y(d.length) + ")";
             })
+            .attr("height", 0)
+            .transition(1000)
+            .delay((d, i) => i * 50)
             .attr("width", function (d) {
               return x(d.x1) - x(d.x0) - 1;
             })
